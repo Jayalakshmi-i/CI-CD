@@ -1,4 +1,6 @@
- <div class="bg-img">
+<!DOCTYPE html>
+<link rel="stylesheet" type="text/css" href="https://github.com/Jayalakshmi-i/CI-CD/blob/main/webapp/src/main/webapp/stylesheet.css">
+<div class="bg-img">
   <form action="/action_page.php" class="container">
     <h1>Login</h1>
 
@@ -10,4 +12,4 @@
 
     <button type="submit" class="btn">Login</button>
   </form>
-</div> 
+</div>
