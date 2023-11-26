@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<link rel="stylesheet" type="text/css" href="https://github.com/Jayalakshmi-i/CI-CD/blob/main/webapp/src/main/webapp/stylesheet.css">
  <form action="action_page.php">
   <div class="container">
     <h1>Register</h1>
