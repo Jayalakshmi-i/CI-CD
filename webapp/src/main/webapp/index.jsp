@@ -1,4 +1,4 @@
-<h1>Welcome to DevOps test project</h1>
+<h1>Welcome to simple DevOps Project webpage</h1>
   <div class="container">
   <form action="/action_page.php">
     <div class="row">
