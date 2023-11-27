@@ -43,4 +43,4 @@
     </div>
   </div>
 </div> 
-<h1>Thank you</h1>
+<h1>Thank you!</h1>
