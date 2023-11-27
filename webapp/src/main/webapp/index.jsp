@@ -1,4 +1,3 @@
-<h1>Welcome to simple DevOps Project</h1>
 <div class="container">
   <form action="/action_page.php">
     <div class="row">
@@ -32,15 +31,3 @@
     </div>
   </form>
 </div>
-
-<div class="bottom-container">
-  <div class="row">
-    <div class="col">
-      <a href="#" style="color:white" class="btn">Sign up</a>
-    </div>
-    <div class="col">
-      <a href="#" style="color:white" class="btn">Forgot password?</a>
-    </div>
-  </div>
-</div> 
-<h1>Thank you!</h1>
