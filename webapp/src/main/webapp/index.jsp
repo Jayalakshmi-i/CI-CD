@@ -1,5 +1,5 @@
  <form action="action_page.php">
-  <h1>Welcome to the DevOps simple project page!!</h1>
+  <h1>Welcome to the DevOps Simple Project Page!!</h1>
   <div class="container">
     <h1>Register</h1>
     <p>Please fill in this form to create an account.</p>
