@@ -72,7 +72,7 @@ useradd dockeradmin   //"dockeradmin" is the name of the docker user
 passwd dockeradmin    //Password for the "dockeradmin" user
 ```
 
-On the Docker server, editing <b>/etc/ssh/sshd_confing</b> file and uncommented <b>“PasswordAuthentication yes”</b> line and commented <b>PasswordAuthentication no</b> line to provide root privileges for the Docker server.
+On the Docker server, editing <b>/etc/ssh/sshd_config</b> file and uncommented <b>“PasswordAuthentication yes”</b> line and commented <b>PasswordAuthentication no</b> line to provide root privileges for the Docker server.
 
 ![5](https://github.com/Jayalakshmi-i/CI-CD/assets/141424247/fa534cfd-3730-40da-ac46-b2dd6355d388)
 
