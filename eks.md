@@ -29,7 +29,7 @@ The command will automatically create an entire cluster with various resources l
 ![image](https://github.com/user-attachments/assets/9cdca39b-4d93-45d4-8dcb-208f25722be9)
 
 
-On the successful execution of eksctl command, we can see the EKS cluster and Worker Nodes created under Compute.
+On the successful execution of the eksctl command, we can see the EKS cluster and Worker Nodes created under Compute.
 
 ![image](https://github.com/user-attachments/assets/7cee5177-64a7-4ec1-873e-9e186f688f65)
 
@@ -40,7 +40,11 @@ On the successful execution of eksctl command, we can see the EKS cluster and Wo
 
 **Configuring kubectl for EKS**: To control our EKS cluster using kubectl commands it needs to update our local kubeconfig file to connect to an Amazon EKS Cluster named \`demo-cluster\`, which configures our kubectl by creating or updating the kubeconfig.
 
-![][image5]
+```
+bash
+aws eks update-kubeconfig --name demo-cluster --region us-east-1
+
+```
 
 **Step 2: Creating Fargate profile with the namespace ‘game-2048’ to deploy 2048 application pods:**
 
@@ -70,7 +74,7 @@ We can define deployments, services and ingress resources separately or everythi
 * Used game-2048 namespace for this service.   
 * Update application port and container Port details.  
 * Defined ‘NodePort’  service type mode.   
-* Mentioned ‘app-2048’ as selector to for the set of pods on which we want to apply this service.
+* Mentioned ‘app-2048’ as a selector to for the set of pods on which we want to apply this service.
 
 ![][image9]
 
