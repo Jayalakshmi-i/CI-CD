@@ -1,11 +1,11 @@
 # Deploying 2048 Game application on AWS EKS using Ingress and ALB Ingress Controller
 
-This project showcases how to deploy real-time 2048 game application on AWS EKS, which have access through the Application load balancer and then expose it to outside world using Ingress and ALB Ingress Controller.
+This project showcases how to deploy a real-time 2048 game application on AWS EKS, which has access through the Application load balancer and then expose it to the outside world using Ingress and ALB Ingress Controller.
 
 **Prerequisites:**
 
 1. **kubectl** – Command line utility used to manage the Kubernetes clusters. It is the main interface that allows users to create (and manage) individual objects or groups of objects inside a Kubernetes cluster.  
-2. **eksctl** – Amazon's managed Kubernetes service for EC2. A command line tool for creating and managing clusters on EKS that automates many individual tasks.  
+2. **eksctl** – Amazon's managed Kubernetes service for EC2. A command-line tool for creating and managing clusters on EKS that automates many individual tasks.  
 3. **AWS CLI** – A command line tool for working with AWS services, including Amazon EKS. The AWS Command Line Interface (CLI) provides a unified tool to manage your AWS services directly from the command line. After installing the AWS CLI, it is recommended to configure it.  So, we can control multiple AWS services from the command line and automate them through scripts.
 
 **Components and Tools used:**
@@ -22,19 +22,21 @@ This project showcases how to deploy real-time 2048 game application on AWS EKS,
 
 **Step 1: Create an EKS cluster using eksctl**
 
-eksctl create cluster \--name demo-cluster \--region us-east-1 –fargate
+```eksctl create cluster \--name demo-cluster \--region us-east-1 –fargate```
 
-The command will automatically create entire cluster with various resources like Fargate instances, VPC, private and public subnets, route tables, NAT gateways, and IAM service roles.
+The command will automatically create an entire cluster with various resources like Fargate instances, VPC, private and public subnets, route tables, NAT gateways, and IAM service roles.
 
-![][image1]
+![image](https://github.com/user-attachments/assets/9cdca39b-4d93-45d4-8dcb-208f25722be9)
+
 
 On the successful execution of eksctl command, we can see the EKS cluster and Worker Nodes created under Compute.
 
-![][image2]
+![image](https://github.com/user-attachments/assets/7cee5177-64a7-4ec1-873e-9e186f688f65)
 
-![][image3]
+![image](https://github.com/user-attachments/assets/93fdd9bc-576b-4a75-a648-a7b3a73f76a0)
 
-![][image4]
+![image](https://github.com/user-attachments/assets/5dd751e7-3c53-490d-8aec-cb8b9277e81b)
+
 
 **Configuring kubectl for EKS**: To control our EKS cluster using kubectl commands it needs to update our local kubeconfig file to connect to an Amazon EKS Cluster named \`demo-cluster\`, which configures our kubectl by creating or updating the kubeconfig.
 
@@ -44,7 +46,7 @@ On the successful execution of eksctl command, we can see the EKS cluster and Wo
 
 ![][image6]
 
-![][image7]
+![image](https://github.com/user-attachments/assets/9616137c-53dc-4341-b7ef-bf65b93e4c82)
 
 **Step 3: Deploying the 2048 Gaming Application with YAML configurations files**
 
@@ -57,7 +59,7 @@ We can define deployments, services and ingress resources separately or everythi
 * Created a namespace (game-2048).  
 * Created Deployment in game-2048 namespace.  
 * Created Labels and Selectors with the name ‘app-2048’, so the service can identify our pods. Note: The labels and selector names are used as in the YAML file.  
-* Defined number of pod replicas for this deployment.  
+* Defined the number of pod replicas for this deployment.  
 * Update the Image with the latest application's docker image.  
 * update the container port.
 
@@ -88,11 +90,12 @@ So, we can apply this file configuration to create deployments, services and Ing
 
 All the above configurations are applied successfully:
 
-![][image12]
+![image](https://github.com/user-attachments/assets/eb3ed3d3-e3e3-44f5-90bc-40482cb99242)
 
-![][image13]
+![image](https://github.com/user-attachments/assets/84bcfff9-051f-431c-9414-a4bd03f829ca)
 
-![][image14]
+![image](https://github.com/user-attachments/assets/43e479b9-5c66-4db4-8755-abe6a2fd18f4)
+
 
 Here we can notice that, we do not have the address in the ingress to access it from the outside world. This is because we did not configure ingress controller. 
 
@@ -116,23 +119,24 @@ Now whenever a pod is running that will have service account and for that servic
 
 Attaching ‘*AmazonEKSLoadBalancerControllerRole*’ role to the service account of pod
 
-![][image18]
+![image](https://github.com/user-attachments/assets/012c02d0-aafc-49c1-ade7-3e87cdba8bac)
+
 
 **Step 5: Installing Helm Charts for ALB Controller:**
 
-Adding EKS to Helm repositories, and update the Helm repo, and then install the ALB controller using Helm charts.
+Adding EKS to Helm repositories, updating the Helm repo, and then installing the ALB controller using Helm charts.
 
 ![][image19]
 
-![][image20]
+![image](https://github.com/user-attachments/assets/5844394d-19ee-49ef-bf07-714445f5c1dc)
 
 **Step 6: Deploy AWS Load Balancer Controller:**
 
-Helm chart will create actual controller and it will use this service account for running the pod
+The helm chart will create the actual controller and it will use this service account to run the pod
 
 ![][image21]
 
-Successfully deployed 2 replicas of ALB controller each in different availability zones.
+Successfully deployed 2 replicas of the ALB controller each in different availability zones.
 
 ![][image22]
 
@@ -140,18 +144,20 @@ Successfully deployed 2 replicas of ALB controller each in different availabilit
 
 ![][image24]
 
-The above ALB controller successfully created an Application Load Balancer using the ingress resource that created earlier.
+The above ALB controller successfully created an Application Load Balancer using the ingress resource that was created earlier.
 
-![][image25]
+![image](https://github.com/user-attachments/assets/064bb560-aec5-4f6d-8167-8e5486beebb4)
 
 Here we got the LB address 
 
-![][image26]
+![image](https://github.com/user-attachments/assets/4a160dbd-d358-41a7-8d6e-0247fc742ac9)
 
-![][image27]
+![image](https://github.com/user-attachments/assets/5b4dd370-5e6c-41d5-ad15-24d6b348e151)
+
 
 **Step 7: Verifying and accessing the Application**
 
-Accessing the game 2048 application using LB address
+Accessing the game 2048 application using the LB address
 
-![][image28]
+![image](https://github.com/user-attachments/assets/0c38f753-8802-4056-973a-1f28a15e7074)
+
