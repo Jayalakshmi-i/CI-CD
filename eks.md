@@ -33,7 +33,9 @@ On the successful execution of the eksctl command, we can see the EKS cluster an
 
 ![image](https://github.com/user-attachments/assets/7cee5177-64a7-4ec1-873e-9e186f688f65)
 
+
 ![image](https://github.com/user-attachments/assets/93fdd9bc-576b-4a75-a648-a7b3a73f76a0)
+
 
 ![image](https://github.com/user-attachments/assets/5dd751e7-3c53-490d-8aec-cb8b9277e81b)
 
@@ -67,7 +69,35 @@ We can define deployments, services and ingress resources separately or everythi
 * Update the Image with the latest application's docker image.  
 * update the container port.
 
-![][image8]
+```
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: game-2048
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: game-2048
+  name: deployment-2048
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: app-2048
+  replicas: 5
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: app-2048
+    spec:
+      containers:
+      - image: public.ecr.aws/l6m2t8p7/docker-2048:latest
+        imagePullPolicy: Always
+        name: app-2048
+        ports:
+        - containerPort: 80
+```
 
 **Service.yaml**
 
@@ -76,7 +106,22 @@ We can define deployments, services and ingress resources separately or everythi
 * Defined ‘NodePort’  service type mode.   
 * Mentioned ‘app-2048’ as a selector to for the set of pods on which we want to apply this service.
 
-![][image9]
+```
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: game-2048
+  name: service-2048
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: app-2048
+```
 
 **Ingress.yaml**
 
@@ -84,13 +129,36 @@ We can define deployments, services and ingress resources separately or everythi
 * Annotations like internet-facing or intranet-facing. In this case, we want the Ingress to be internet facing so our application inside the pods can be accessed from outside world.  
 * Mentioned the name of the service that this Ingress is going to use.
 
-![][image10]
+```
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: game-2048
+  name: ingress-2048
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: service-2048
+              port:
+                number: 80
+```
 
-All the above configuration for deployments, services and Ingress are mentioned in the file: [https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/examples/2048/2048\_full.yaml](https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/examples/2048/2048_full.yaml)
+All the above configurations for deployments, services and Ingress are mentioned in the file: [https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/examples/2048/2048\_full.yaml](https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/examples/2048/2048_full.yaml)
 
-So, we can apply this file configuration to create deployments, services and Ingress resources for the 2048 game application using the ‘kubectl apply’ command.
+We can use the `kubectl apply` command to apply this file configuration to create deployments, services, and Ingress resources for the 2048 game application.
 
-![][image11]
+![image](https://github.com/user-attachments/assets/c34f416e-2152-4e7a-ab69-425407cdfe47)
+
 
 All the above configurations are applied successfully:
 
@@ -105,23 +173,23 @@ Here we can notice that, we do not have the address in the ingress to access it 
 
 This ingress controller will read this ingress-2048 ingress resource and create Application LB for us with all configurations like target groups and what port the pods should listen
 
-Before deploying this ingress ALB controller, we need access to AWS account so need to create a IAM OIDC provider so that ALB within AWS account can be integrated to gain access
+Before deploying this ingress ALB controller, we need access to the AWS account so need to create an IAM OIDC provider so that ALB within the AWS account can be integrated to gain access
 
 **Step 4:** **Configure IAM OIDC Provider and IAM Policy:**
 
-Now Associate an IAM OIDC provider with your cluster:
+next, associating an IAM OIDC provider with the cluster:
 
-![][image15]
+![image](https://github.com/user-attachments/assets/6faa1704-437e-45ae-a978-40dd3c73d540)
 
-![][image16]
+![image](https://github.com/user-attachments/assets/318e4560-b040-44f3-b460-7b496b78b9cc)
 
 Create an IAM policy for the AWS Load Balancer Controller:
 
-![][image17]
+![image](https://github.com/user-attachments/assets/92b72d74-88b8-4034-8541-4648e9d73f8d)
 
-Now whenever a pod is running that will have service account and for that service account, we need IAM role attached so that it can talk to other services in the AWS account
+Now whenever a pod is running it will have a service account and for that service account, we need the IAM role attached so that it can talk to other services in the AWS account
 
-Attaching ‘*AmazonEKSLoadBalancerControllerRole*’ role to the service account of pod
+Attaching the ‘*AmazonEKSLoadBalancerControllerRole*’ role to the service account of the pod
 
 ![image](https://github.com/user-attachments/assets/012c02d0-aafc-49c1-ade7-3e87cdba8bac)
 
