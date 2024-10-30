@@ -50,8 +50,6 @@ aws eks update-kubeconfig --name demo-cluster --region us-east-1
 
 **Step 2: Creating Fargate profile with the namespace ‘game-2048’ to deploy 2048 application pods:**
 
-![][image6]
-
 ![image](https://github.com/user-attachments/assets/9616137c-53dc-4341-b7ef-bf65b93e4c82)
 
 **Step 3: Deploying the 2048 Gaming Application with YAML configurations files**
@@ -191,14 +189,24 @@ Now whenever a pod is running it will have a service account and for that servic
 
 Attaching the ‘*AmazonEKSLoadBalancerControllerRole*’ role to the service account of the pod
 
-![image](https://github.com/user-attachments/assets/012c02d0-aafc-49c1-ade7-3e87cdba8bac)
-
+```
+eksctl create iamserviceaccount \
+  --cluster=demo-cluster \
+  --namespace=kube-system \
+  --name=aws-load-balancer-controller \
+  --role-name AmazonEKSLoadBalancerControllerRole \
+  --attach-policy-arn=arn:aws:iam::<your-aws-account-id>:policy/AWSLoadBalancerControllerIAMPolicy \
+  --approve
+  ```
+  
 
 **Step 5: Installing Helm Charts for ALB Controller:**
 
 Adding EKS to Helm repositories, updating the Helm repo, and then installing the ALB controller using Helm charts.
 
-![][image19]
+```
+helm repo add eks https://aws.github.io/eks-charts
+```
 
 ![image](https://github.com/user-attachments/assets/5844394d-19ee-49ef-bf07-714445f5c1dc)
 
@@ -206,23 +214,32 @@ Adding EKS to Helm repositories, updating the Helm repo, and then installing the
 
 The helm chart will create the actual controller and it will use this service account to run the pod
 
-![][image21]
+```
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller \            
+  -n kube-system \
+  --set clusterName=<your-cluster-name> \
+  --set serviceAccount.create=false \
+  --set serviceAccount.name=aws-load-balancer-controller \
+  --set region=<region> \
+  --set vpcId=<your-vpc-id>
+
+```
+  ![image](https://github.com/user-attachments/assets/a0f05d66-ff6c-4988-ae44-0ac395885fa0)
 
 Successfully deployed 2 replicas of the ALB controller each in different availability zones.
 
-![][image22]
+![image](https://github.com/user-attachments/assets/25188da1-2c01-49fc-b399-0a4f2801d110)
 
-![][image23]
+![image](https://github.com/user-attachments/assets/2b1418af-6795-4be7-84ef-a2637e3631dc)
 
-![][image24]
+![image](https://github.com/user-attachments/assets/0b54da12-d6d1-43bc-a9d7-98ce19cde506)
+
 
 The above ALB controller successfully created an Application Load Balancer using the ingress resource that was created earlier.
 
 ![image](https://github.com/user-attachments/assets/064bb560-aec5-4f6d-8167-8e5486beebb4)
 
 Here we got the LB address 
-
-![image](https://github.com/user-attachments/assets/4a160dbd-d358-41a7-8d6e-0247fc742ac9)
 
 ![image](https://github.com/user-attachments/assets/5b4dd370-5e6c-41d5-ad15-24d6b348e151)
 
